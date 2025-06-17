@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from monitoramento.models import Ativo, TunelDePreco, ConfiguracaoChecagem
-import random  # Por enquanto, simulação
+import yfinance as yf
 
 class Command(BaseCommand):
     help = 'Checa as cotações dos ativos e compara com os limites definidos'
@@ -13,8 +13,12 @@ class Command(BaseCommand):
                 tunel = TunelDePreco.objects.get(ativo=ativo)
                 config = ConfiguracaoChecagem.objects.get(ativo=ativo)
 
-                # Simulação de cotação atual (exemplo: de 10 a 50 reais)
-                cotacao_atual = random.uniform(10.0, 50.0)
+                cotacao_data = yf.Ticker(f"{ativo.ticker}.SA").history(period="1d")
+                if cotacao_data.empty:
+                    print(f"Não foi possível obter a cotação de {ativo.ticker}")
+                    continue
+                # Verifica se a cotação foi obtida corretamente
+                cotacao_atual = cotacao_data['Close'].iloc[-1]
                 print(f'Ativo {ativo.ticker} - Cotação atual: {cotacao_atual:.2f}')
 
                 if cotacao_atual < float(tunel.preco_min):
