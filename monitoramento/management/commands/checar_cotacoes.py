@@ -1,6 +1,8 @@
 from django.core.management.base import BaseCommand
 from monitoramento.models import Ativo, TunelDePreco, ConfiguracaoChecagem
 import yfinance as yf
+from django.core.mail import send_mail
+
 
 class Command(BaseCommand):
     help = 'Checa as cotações dos ativos e compara com os limites definidos'
@@ -23,8 +25,23 @@ class Command(BaseCommand):
 
                 if cotacao_atual < float(tunel.preco_min):
                     print(f'ALERTA: {ativo.ticker} abaixo do limite mínimo ({tunel.preco_min})')
+                    send_mail(
+                        subject=f'Alerta: {ativo.ticker} abaixo do mínimo',
+                        message=f'O ativo {ativo.ticker} está com cotação {cotacao_atual:.2f}, abaixo de {tunel.preco_min}.',
+                        from_email=None,
+                        recipient_list=['thiconca@gmail.com'],
+                        fail_silently=False,
+                    )
+
                 elif cotacao_atual > float(tunel.preco_max):
                     print(f'ALERTA: {ativo.ticker} acima do limite máximo ({tunel.preco_max})')
+                    send_mail(
+                        subject=f'Alerta: {ativo.ticker} acima do máximo',
+                        message=f'O ativo {ativo.ticker} está com cotação {cotacao_atual:.2f}, acima de {tunel.preco_max}.',
+                        from_email=None,
+                        recipient_list=['thiconca@gmail.com'],
+                        fail_silently=False,
+                    )
                 else:
                     print(f'{ativo.ticker} dentro do túnel')
 
