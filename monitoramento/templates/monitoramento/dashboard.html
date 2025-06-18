@@ -8,84 +8,231 @@
             background: linear-gradient(135deg, #6e8efb, #a777e3);
             font-family: Arial, sans-serif;
             color: #fff;
-            text-align: center;
-            padding-top: 50px;
+            padding: 20px;
+            min-height: 100vh;
+            box-sizing: border-box;
         }
         .container {
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0, 0, 0, 0.5);
             padding: 30px;
             border-radius: 10px;
-            width: 50%;
+            width: 90%;
             margin: auto;
+        }
+        h2, h3 {
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
         }
         table {
-            margin: auto;
-            margin-bottom: 20px;
-            width: 80%;
+            width: 100%;
             border-collapse: collapse;
+            background-color: #fff;
+            color: #333;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
         }
         th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            background-color: rgba(255,255,255,0.1);
+            border: 1px solid #ccc;
+            padding: 12px;
+            text-align: center;
+            vertical-align: middle;
         }
-        h2 {
-            margin-bottom: 20px;
+        th {
+            background-color: rgba(0, 0, 0, 0.1);
         }
-        form input, form select {
+        form {
+            margin: 0;
+        }
+        input, select {
+            width: 100%;
             padding: 8px;
-            margin: 5px;
+            margin: 5px 0;
             border-radius: 5px;
-            border: none;
-            width: 70%;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
         }
         button {
-            background-color: #ffce00;
-            color: #333;
-            padding: 10px 20px;
+            padding: 8px 15px;
             border: none;
             border-radius: 5px;
             font-weight: bold;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
-        button:hover {
-            background-color: #ffd633;
+        .btn-save {
+            background-color: #ffce00;
+            color: #333;
         }
-        a {
-            color: #ffce00;
+        .btn-save:hover {
+            background-color: #e6b800;
+        }
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+        }
+        .btn-delete:hover {
+            background-color: #c82333;
+        }
+        .actions-cell button {
+            margin: 0 5px;
+            min-width: 80px;
+        }
+        .error {
+            color: #ffdddd;
+            background-color: rgba(255, 0, 0, 0.2);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .add-forms-container {
+            display: flex;
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .form-add {
+            flex: 1;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            border-radius: 8px;
+        }
+        .form-add h3 {
+            margin-bottom: 20px;
+        }
+        .form-add label, .form-add p {
+            margin-bottom: 10px;
+        }
+        .form-add input, .form-add select {
+            margin-top: 5px;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            color: white;
+            background-color: #007bff;
+            margin-top: 15px;
+        }
+        .btn-submit:hover {
+            background-color: #0056b3;
+        }
+        .logout-link {
+            display: block;
+            text-align: center;
+            margin-top: 40px;
+            color: #fff;
+            text-decoration: none;
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .logout-link:hover {
+            background-color: rgba(0, 0, 0, 0.5);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Bem-vindo, {{ request.user.username }}!</h2>
+        <h2>Dashboard - {{ request.user.username }}</h2>
 
-        <h3>Seus Ativos Monitorados:</h3>
-        {% if ativos %}
-            <table>
-                <tr>
-                    <th>Nome</th>
-                    <th>Ticker</th>
-                </tr>
-                {% for ativo in ativos %}
+        <h3>Seus Ativos</h3>
+        <table>
+            <tr>
+                <th>Nome</th>
+                <th>Ticker</th>
+                <th>Preço Mínimo</th>
+                <th>Preço Máximo</th>
+                <th>Ações</th>
+            </tr>
+            {% for ativo in ativos %}
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="ativo_id" value="{{ ativo.id }}">
+                    {% if ativo.tuneldepreco %}
+                        <input type="hidden" name="tunel_id" value="{{ ativo.tuneldepreco.id }}">
+                    {% endif %}
                     <tr>
-                        <td>{{ ativo.nome }}</td>
-                        <td>{{ ativo.ticker }}</td>
+                        <td>
+                            <input type="text" name="nome" value="{{ ativo.nome }}">
+                        </td>
+                        <td>
+                            <input type="text" name="ticker" value="{{ ativo.ticker }}">
+                        </td>
+                        <td>
+                            {% if ativo.tuneldepreco %}
+                                <input type="text" name="preco_min" value="{{ ativo.tuneldepreco.preco_min }}">
+                            {% else %}
+                                <input type="text" name="preco_min" placeholder="Sem túnel" disabled>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if ativo.tuneldepreco %}
+                                <input type="text" name="preco_max" value="{{ ativo.tuneldepreco.preco_max }}">
+                            {% else %}
+                                <input type="text" name="preco_max" placeholder="Sem túnel" disabled>
+                            {% endif %}
+                        </td>
+                        <td class="actions-cell">
+                            <button type="submit" name="action" value="save_changes" class="btn-save">Salvar</button>
+                            {% if ativo.tuneldepreco %}
+                                <button type="submit" name="action" value="delete_tunel" class="btn-delete">Remover Túnel</button>
+                            {% endif %}
+                        </td>
                     </tr>
-                {% endfor %}
-            </table>
-        {% else %}
-            <p>Você ainda não está monitorando nenhum ativo.</p>
-        {% endif %}
+                </form>
+            {% endfor %}
+        </table>
 
-        <h3>Adicionar Novo Ativo:</h3>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Adicionar</button>
-        </form>
+        <div class="add-forms-container">
+            <div class="form-add">
+                <h3>Adicionar Novo Ativo</h3>
+                {% if ativo_form.errors %}
+                    <div class="error">
+                        {% for field, errors in ativo_form.errors.items %}
+                            {% for error in errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <form method="post">
+                    {% csrf_token %}
+                    {{ ativo_form.as_p }}
+                    <button type="submit" name="add_ativo" class="btn-submit">Adicionar Ativo</button>
+                </form>
+            </div>
 
-        <p><a href="{% url 'logout' %}">Sair</a></p>
+            <div class="form-add">
+                <h3>Adicionar Novo Túnel</h3>
+                {% if tunel_form.errors %}
+                    <div class="error">
+                        {% for field, errors in tunel_form.errors.items %}
+                            {% for error in errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <form method="post">
+                    {% csrf_token %}
+                    <label for="ativo">Selecione o Ativo:</label>
+                    <select name="ativo" id="ativo">
+                        {% for ativo in ativos %}
+                            <option value="{{ ativo.id }}">{{ ativo.nome }} ({{ ativo.ticker }})</option>
+                        {% endfor %}
+                    </select>
+                    <label for="preco_min">Preço Mínimo:</label>
+                    <input type="text" name="preco_min" id="preco_min"  placeholder="Digite o preço mínimo">
+                    <label for="preco_max">Preço Máximo:</label>
+                    <input type="text" name="preco_max" id="preco_max" placeholder="Digite o preço máximo">
+                    <button type="submit" name="add_tunel" class="btn-submit">Adicionar Túnel</button>
+                </form>
+            </div>
+        </div>
+
+        <a href="{% url 'logout' %}" class="logout-link">Sair</a>
     </div>
 </body>
 </html>

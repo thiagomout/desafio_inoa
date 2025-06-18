@@ -4,14 +4,16 @@ from django.contrib.auth.models import User
 class Ativo(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     nome = models.CharField(max_length=100)
-    ticker = models.CharField(max_length=10, unique=True)
+    ticker = models.CharField(max_length=10)
+
+    class Meta:
+        unique_together = ('user', 'ticker')
 
     def __str__(self):
         return f'{self.nome} ({self.ticker})'
 
 class TunelDePreco(models.Model):
     ativo = models.OneToOneField(Ativo, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
     preco_min = models.DecimalField(max_digits=10, decimal_places=2)
     preco_max = models.DecimalField(max_digits=10, decimal_places=2)
 
