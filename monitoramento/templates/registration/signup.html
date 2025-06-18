@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            font-family: Arial, sans-serif;
+            color: #fff;
+            text-align: center;
+            padding-top: 100px;
+        }
+        .container {
+            background-color: rgba(0,0,0,0.5);
+            padding: 40px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        h2 {
+            font-size: 30px;
+            margin-bottom: 20px;
+        }
+        form input {
+            display: block;
+            width: 80%;
+            margin: 10px auto;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+        }
+        button {
+            background-color: #ffce00;
+            color: #333;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #ffd633;
+        }
+        a {
+            color: #ffce00;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Criar Conta</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Cadastrar</button>
+        </form>
+        <p>Já tem conta? <a href="{% url 'login' %}">Login</a></p>
+        <p><a href="{% url 'home' %}">Voltar para a Home</a></p>
+    </div>
+</body>
+</html>

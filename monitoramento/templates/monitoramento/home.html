@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Desafio Inoa - Bem-vindo</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            font-family: Arial, sans-serif;
+            color: #fff;
+            text-align: center;
+            padding-top: 100px;
+        }
+        .container {
+            background-color: rgba(0,0,0,0.5);
+            padding: 40px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        a.button {
+            display: inline-block;
+            margin: 10px;
+            padding: 12px 25px;
+            background-color: #ffce00;
+            color: #333;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        a.button:hover {
+            background-color: #ffd633;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bem-vindo ao Sistema de Monitoramento de Ativos</h1>
+        <a href="{% url 'signup' %}" class="button">Criar Conta</a>
+        <a href="{% url 'login' %}" class="button">Fazer Login</a>
+    </div>
+</body>
+</html>

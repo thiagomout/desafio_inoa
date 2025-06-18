@@ -104,7 +104,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt-br'
 
 TIME_ZONE = 'UTC'
 
@@ -130,3 +130,5 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'desafioalerta@gmail.com'
 EMAIL_HOST_PASSWORD = 'yhqe lxly gesq xfsh'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+LOGIN_REDIRECT_URL = '/dashboard/'

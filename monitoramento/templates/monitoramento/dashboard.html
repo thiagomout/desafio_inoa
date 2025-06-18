@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            font-family: Arial, sans-serif;
+            color: #fff;
+            text-align: center;
+            padding-top: 50px;
+        }
+        .container {
+            background-color: rgba(0,0,0,0.5);
+            padding: 30px;
+            border-radius: 10px;
+            width: 50%;
+            margin: auto;
+        }
+        table {
+            margin: auto;
+            margin-bottom: 20px;
+            width: 80%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            background-color: rgba(255,255,255,0.1);
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        form input, form select {
+            padding: 8px;
+            margin: 5px;
+            border-radius: 5px;
+            border: none;
+            width: 70%;
+        }
+        button {
+            background-color: #ffce00;
+            color: #333;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #ffd633;
+        }
+        a {
+            color: #ffce00;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Bem-vindo, {{ request.user.username }}!</h2>
+
+        <h3>Seus Ativos Monitorados:</h3>
+        {% if ativos %}
+            <table>
+                <tr>
+                    <th>Nome</th>
+                    <th>Ticker</th>
+                </tr>
+                {% for ativo in ativos %}
+                    <tr>
+                        <td>{{ ativo.nome }}</td>
+                        <td>{{ ativo.ticker }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>Você ainda não está monitorando nenhum ativo.</p>
+        {% endif %}
+
+        <h3>Adicionar Novo Ativo:</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Adicionar</button>
+        </form>
+
+        <p><a href="{% url 'logout' %}">Sair</a></p>
+    </div>
+</body>
+</html>
