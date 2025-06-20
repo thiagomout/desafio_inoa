@@ -73,10 +73,9 @@ As credenciais e chaves secretas são gerenciadas através de um arquivo `.env`.
 # Use uma chave forte e única para produção. Pode gerar uma nova.
 SECRET_KEY='django-insecure-!%$apgvd5vuk0p101t!75e-epvyh%1j6&!bcwziufe2-%wp1_3'
 
-# Configurações de E-mail (usando Gmail como exemplo)
-# ATENÇÃO: Use uma "Senha de App" gerada no Google, não sua senha normal.
-EMAIL_HOST_USER='seu-email@gmail.com'
-EMAIL_HOST_PASSWORD='sua-senha-de-app-do-google'
+# Configurações de E-mail (usando as credenciais do Desafio Alerta como exemplo.)
+EMAIL_HOST_USER='desafioalerta@gmail.com'
+EMAIL_HOST_PASSWORD='yhqe lxly gesq xfsh'
 ```
 
 ### 5. Aplicar as Migrações do Banco de Dados
