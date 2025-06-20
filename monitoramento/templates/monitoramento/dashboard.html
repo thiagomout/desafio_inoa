@@ -160,7 +160,6 @@
                     {% endif %}
                     <tr>
                         <td>
-                            <!-- Link para a página de detalhes -->
                             <a href="{% url 'ativo_detalhe' ativo.id %}" style="color: #007bff; text-decoration: none;">{{ ativo.nome }}</a>
                         </td>
                         <td>
@@ -189,9 +188,7 @@
                         </td>
                         <td class="actions-cell">
                             <button type="submit" name="action" value="save_changes" class="btn-save">Salvar</button>
-                            
                             <button type="submit" name="action" value="delete_ativo" class="btn-delete" style="margin-left: 5px;">Remover Ativo</button>
-
                             {% if ativo.tuneldepreco %}
                                 <button type="submit" name="action" value="delete_tunel" class="btn-delete" style="margin-top: 5px;">Remover Túnel</button>
                             {% endif %}
@@ -202,50 +199,61 @@
         </table>
 
         <div class="add-forms-container">
-            <div class="form-add">
-                <h3>Adicionar Novo Ativo</h3>
-                {% if ativo_form.errors %}
-                    <div class="error">
-                        {% for field, errors in ativo_form.errors.items %}
-                            {% for error in errors %}
-                                <p>{{ error }}</p>
-                            {% endfor %}
-                        {% endfor %}
-                    </div>
-                {% endif %}
-                <form method="post">
-                    {% csrf_token %}
-                    {{ ativo_form.as_p }}
-                    <button type="submit" name="add_ativo" class="btn-submit">Adicionar Ativo</button>
-                </form>
-            </div>
-
-            <div class="form-add">
-                <h3>Adicionar Novo Túnel</h3>
-                {% if tunel_form.errors %}
-                    <div class="error">
-                        {% for field, errors in tunel_form.errors.items %}
-                            {% for error in errors %}
-                                <p>{{ error }}</p>
-                            {% endfor %}
-                        {% endfor %}
-                    </div>
-                {% endif %}
-                <form method="post">
-                    {% csrf_token %}
-                    <label for="ativo">Selecione o Ativo:</label>
-                    <select name="ativo" id="ativo">
-                        {% for ativo in ativos %}
-                            <option value="{{ ativo.id }}">{{ ativo.nome }} ({{ ativo.ticker }})</option>
-                        {% endfor %}
-                    </select>
-                    <label for="preco_min">Preço Mínimo:</label>
-                    <input type="text" name="preco_min" id="preco_min"  placeholder="Digite o preço mínimo">
-                    <label for="preco_max">Preço Máximo:</label>
-                    <input type="text" name="preco_max" id="preco_max" placeholder="Digite o preço máximo">
-                    <button type="submit" name="add_tunel" class="btn-submit">Adicionar Túnel</button>
-                </form>
-            </div>
+            {% if show_tunel_form_first %}
+                <!-- Ordem Invertida: Túnel primeiro, pois há um ativo esperando por ele -->
+                <div class="form-add">
+                    <h3>Adicionar Novo Túnel</h3>
+                    {% if tunel_form.errors %}<div class="error">{% for field, errors in tunel_form.errors.items %}{% for error in errors %}<p>{{ error }}</p>{% endfor %}{% endfor %}</div>{% endif %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <label for="ativo">Selecione o Ativo:</label>
+                        <select name="ativo" id="ativo">
+                            {% for ativo in ativos %}{% if not ativo.tuneldepreco %}<option value="{{ ativo.id }}">{{ ativo.nome }} ({{ ativo.ticker }})</option>{% endif %}{% endfor %}
+                        </select>
+                        <label for="preco_min">Preço Mínimo:</label>
+                        <input type="text" name="preco_min" id="preco_min"  placeholder="Digite o preço mínimo">
+                        <label for="preco_max">Preço Máximo:</label>
+                        <input type="text" name="preco_max" id="preco_max" placeholder="Digite o preço máximo">
+                        <button type="submit" name="add_tunel" class="btn-submit">Adicionar Túnel</button>
+                    </form>
+                </div>
+                <div class="form-add">
+                    <h3>Adicionar Novo Ativo</h3>
+                    {% if ativo_form.errors %}<div class="error">{% for field, errors in ativo_form.errors.items %}{% for error in errors %}<p>{{ error }}</p>{% endfor %}{% endfor %}</div>{% endif %}
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ ativo_form.as_p }}
+                        <button type="submit" name="add_ativo" class="btn-submit">Adicionar Ativo</button>
+                    </form>
+                </div>
+            {% else %}
+                <!-- Ordem Padrão: Ativo primeiro -->
+                <div class="form-add">
+                    <h3>Adicionar Novo Ativo</h3>
+                    {% if ativo_form.errors %}<div class="error">{% for field, errors in ativo_form.errors.items %}{% for error in errors %}<p>{{ error }}</p>{% endfor %}{% endfor %}</div>{% endif %}
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ ativo_form.as_p }}
+                        <button type="submit" name="add_ativo" class="btn-submit">Adicionar Ativo</button>
+                    </form>
+                </div>
+                <div class="form-add">
+                    <h3>Adicionar Novo Túnel</h3>
+                    {% if tunel_form.errors %}<div class="error">{% for field, errors in tunel_form.errors.items %}{% for error in errors %}<p>{{ error }}</p>{% endfor %}{% endfor %}</div>{% endif %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <label for="ativo">Selecione o Ativo:</label>
+                        <select name="ativo" id="ativo">
+                            {% for ativo in ativos %}{% if not ativo.tuneldepreco %}<option value="{{ ativo.id }}">{{ ativo.nome }} ({{ ativo.ticker }})</option>{% endif %}{% endfor %}
+                        </select>
+                        <label for="preco_min">Preço Mínimo:</label>
+                        <input type="text" name="preco_min" id="preco_min"  placeholder="Digite o preço mínimo">
+                        <label for="preco_max">Preço Máximo:</label>
+                        <input type="text" name="preco_max" id="preco_max" placeholder="Digite o preço máximo">
+                        <button type="submit" name="add_tunel" class="btn-submit">Adicionar Túnel</button>
+                    </form>
+                </div>
+            {% endif %}
         </div>
 
         <form action="{% url 'logout' %}" method="post">

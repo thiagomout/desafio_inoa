@@ -8,6 +8,7 @@ from .forms import AtivoForm, TunelDePrecoForm
 from .forms import CustomUserCreationForm
 from django.contrib import messages
 import yfinance as yf
+from decimal import Decimal, InvalidOperation
 
 def signup(request):
     if request.method == 'POST':
@@ -36,14 +37,33 @@ def dashboard(request):
 
             if action == 'save_changes':
                 ativo = get_object_or_404(Ativo, id=ativo_id, user=request.user)
-                ativo_edit_form = AtivoForm(request.POST, instance=ativo, user=request.user)
-                if ativo_edit_form.is_valid():
-                    ativo_edit_form.save()
+                
+                # Salva o intervalo do ativo
+                ativo.intervalo_checagem = request.POST.get('intervalo_checagem')
+                ativo.save()
 
+                # Atualiza o túnel
                 if hasattr(ativo, 'tuneldepreco') and ativo.tuneldepreco:
-                    tunel_edit_form = TunelDePrecoForm(request.POST, instance=ativo.tuneldepreco, user=request.user)
-                    if tunel_edit_form.is_valid():
-                         tunel_edit_form.save()
+                    tunel = ativo.tuneldepreco
+                    
+                    # Pega os valores do POST
+                    preco_min_str = request.POST.get('preco_min')
+                    preco_max_str = request.POST.get('preco_max')
+                    
+                    if preco_min_str and preco_max_str:
+                        try:
+                            # A CORREÇÃO ESTÁ AQUI: Substitui a vírgula pelo ponto
+                            preco_min_limpo = preco_min_str.replace(',', '.')
+                            preco_max_limpo = preco_max_str.replace(',', '.')
+
+                            # Converte para Decimal e salva
+                            tunel.preco_min = Decimal(preco_min_limpo)
+                            tunel.preco_max = Decimal(preco_max_limpo)
+                            tunel.save()
+                        except InvalidOperation:
+                            # Lida com o caso de o usuário digitar algo que não é um número
+                            messages.error(request, "Por favor, insira um valor numérico válido para os preços.")
+                
                 return redirect('dashboard')
 
             elif action == 'delete_ativo':
@@ -71,10 +91,14 @@ def dashboard(request):
                 tunel_form.save()
                 return redirect('dashboard')
 
+    
+    show_tunel_form_first = Ativo.objects.filter(user=request.user, tuneldepreco__isnull=True).exists()
+
     context = {
         'ativos': ativos,
         'ativo_form': ativo_form,
         'tunel_form': tunel_form,
+        'show_tunel_form_first': show_tunel_form_first,
     }
     return render(request, 'monitoramento/dashboard.html', context)
 
