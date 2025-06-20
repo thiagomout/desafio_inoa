@@ -119,6 +119,7 @@
         }
         .logout-link {
             display: block;
+            width: 100%; 
             text-align: center;
             margin-top: 40px;
             color: #fff;
@@ -126,6 +127,9 @@
             background-color: rgba(0, 0, 0, 0.3);
             padding: 12px;
             border-radius: 5px;
+            border: none; 
+            font-size: 16px; 
+            cursor: pointer; 
             transition: background-color 0.3s ease;
         }
         .logout-link:hover {
@@ -142,6 +146,7 @@
             <tr>
                 <th>Nome</th>
                 <th>Ticker</th>
+                <th>Intervalo (min)</th>
                 <th>Preço Mínimo</th>
                 <th>Preço Máximo</th>
                 <th>Ações</th>
@@ -155,10 +160,18 @@
                     {% endif %}
                     <tr>
                         <td>
-                            <input type="text" name="nome" value="{{ ativo.nome }}">
+                            <!-- Link para a página de detalhes -->
+                            <a href="{% url 'ativo_detalhe' ativo.id %}" style="color: #007bff; text-decoration: none;">{{ ativo.nome }}</a>
                         </td>
                         <td>
-                            <input type="text" name="ticker" value="{{ ativo.ticker }}">
+                            {{ ativo.ticker }}
+                        </td>
+                        <td>
+                            <select name="intervalo_checagem" style="width: auto;">
+                                {% for value, text in ativo_form.fields.intervalo_checagem.choices %}
+                                    <option value="{{ value }}" {% if ativo.intervalo_checagem == value %}selected{% endif %}>{{ text }}</option>
+                                {% endfor %}
+                            </select>
                         </td>
                         <td>
                             {% if ativo.tuneldepreco %}
@@ -176,8 +189,11 @@
                         </td>
                         <td class="actions-cell">
                             <button type="submit" name="action" value="save_changes" class="btn-save">Salvar</button>
+                            
+                            <button type="submit" name="action" value="delete_ativo" class="btn-delete" style="margin-left: 5px;">Remover Ativo</button>
+
                             {% if ativo.tuneldepreco %}
-                                <button type="submit" name="action" value="delete_tunel" class="btn-delete">Remover Túnel</button>
+                                <button type="submit" name="action" value="delete_tunel" class="btn-delete" style="margin-top: 5px;">Remover Túnel</button>
                             {% endif %}
                         </td>
                     </tr>
@@ -232,7 +248,10 @@
             </div>
         </div>
 
-        <a href="{% url 'logout' %}" class="logout-link">Sair</a>
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="logout-link">Sair</button>
+        </form>
     </div>
 </body>
 </html>

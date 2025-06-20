@@ -1,1 +1,56 @@
+# Ambientes Virtuais
+# Nunca envie seu ambiente virtual para o repositório.
+venv/
+env/
+.venv/
+.env/
+
+# Arquivos de Cache e Compilados do Python
 __pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Banco de Dados
+# O banco de dados de desenvolvimento não deve ser versionado.
+db.sqlite3
+*.sql
+
+# Arquivos de Mídia e Estáticos
+# Arquivos enviados por usuários e coletados pelo 'collectstatic'.
+media/
+staticfiles/
+static_root/
+
+# Arquivos de Configuração de IDEs e Editores
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Arquivos de Segredos e Variáveis de Ambiente
+# Mantenha suas chaves secretas e configurações locais fora do Git.
+.env
+local_settings.py
+*.env
+
+# Arquivos de Log
+*.log
+logs/
+
+# Relatórios de Testes e Cobertura
+.coverage
+.pytest_cache/
+htmlcov/
+nosetests.xml
+coverage.xml
+
+# Arquivos de Sistema Operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Arquivos de Build e Pacotes do Python
+build/
+dist/
+*.egg-info/

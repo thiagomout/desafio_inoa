@@ -132,3 +132,15 @@ EMAIL_HOST_PASSWORD = 'yhqe lxly gesq xfsh'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 LOGIN_REDIRECT_URL = '/dashboard/'
+
+INSTALLED_APPS += ['django_q']
+
+Q_CLUSTER = {
+    'name': 'inoa_tasks',
+    'workers': 4,
+    'timeout': 60,
+    'retry': 120,
+    'queue_limit': 50,
+    'bulk': 10,
+    'orm': 'default',
+}

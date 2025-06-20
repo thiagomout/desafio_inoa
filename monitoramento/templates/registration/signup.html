@@ -9,40 +9,67 @@
             font-family: Arial, sans-serif;
             color: #fff;
             text-align: center;
-            padding-top: 100px;
+            padding-top: 50px;
         }
         .container {
             background-color: rgba(0,0,0,0.5);
             padding: 40px;
             border-radius: 10px;
             display: inline-block;
+            width: 350px;
         }
         h2 {
             font-size: 30px;
             margin-bottom: 20px;
         }
-        form input {
+        .form-field {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .form-field label {
             display: block;
-            width: 80%;
-            margin: 10px auto;
+            margin-bottom: 5px;
+        }
+        .form-field input {
+            width: 100%;
             padding: 10px;
             border-radius: 5px;
             border: none;
+            box-sizing: border-box;
+        }
+        .error-list {
+            list-style: none;
+            padding: 0;
+            margin: 5px 0 0 0;
+            font-size: 14px;
+        }
+        .error-list .error {
+            color: #ffdddd; /* Cor padrão para outros erros */
+        }
+        .error-list .password-error {
+            color: #ffce00; /* Cor amarela para erros de senha */
+            font-weight: bold;
         }
         button {
             background-color: #ffce00;
             color: #333;
-            padding: 10px 25px;
+            padding: 12px 25px;
             border: none;
             border-radius: 5px;
             font-weight: bold;
             cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            font-size: 16px;
         }
         button:hover {
             background-color: #ffd633;
         }
         a {
             color: #ffce00;
+        }
+        .links {
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -51,11 +78,38 @@
         <h2>Criar Conta</h2>
         <form method="post">
             {% csrf_token %}
-            {{ form.as_p }}
+
+            <!-- Renderiza erros que não são de um campo específico -->
+            {% if form.non_field_errors %}
+                <div class="error-list">
+                    {% for error in form.non_field_errors %}
+                        <p class="error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Renderiza cada campo manualmente -->
+            {% for field in form %}
+                <div class="form-field">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.errors %}
+                        <ul class="error-list">
+                        {% for error in field.errors %}
+                            <!-- Aplica a classe 'password-error' se o campo for de senha -->
+                            <li class="{% if 'password' in field.name %}password-error{% else %}error{% endif %}">{{ error }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            
             <button type="submit">Cadastrar</button>
         </form>
-        <p>Já tem conta? <a href="{% url 'login' %}">Login</a></p>
-        <p><a href="{% url 'home' %}">Voltar para a Home</a></p>
+        <div class="links">
+            <p>Já tem conta? <a href="{% url 'login' %}">Login</a></p>
+            <p><a href="{% url 'home' %}">Voltar para a Home</a></p>
+        </div>
     </div>
 </body>
 </html>
