@@ -1,2 +1,2 @@
 # desafio_inoa
-Desafio da INOA em c#
+Desafio da INOA em Python com Django
